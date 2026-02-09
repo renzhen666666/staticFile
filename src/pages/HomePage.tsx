@@ -2,16 +2,18 @@ import React, { useState, useEffect } from 'react';
 import { FileUpload } from '../components/FileUpload';
 import { DashboardStats } from '../components/DashboardStats';
 import { fileAPI } from '../utils/api';
+import { useRefresh } from '../context/RefreshContext';
 import type { FileStats } from '../types';
 
 export const HomePage: React.FC = () => {
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [stats, setStats] = useState<FileStats | null>(null);
+  const { isRefreshing } = useRefresh();
 
   useEffect(() => {
     loadStats();
-  }, []);
+  }, [isRefreshing]);
 
   const loadStats = async () => {
     try {

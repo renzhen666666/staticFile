@@ -3,11 +3,13 @@ import { Home, Upload, FolderOpen, Moon, Sun, LogOut, User, RefreshCw } from 'lu
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
+import { useRefresh } from '../context/RefreshContext';
 import { cn } from '../utils/helpers';
 
 export const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const { triggerRefresh, isRefreshing } = useRefresh();
   const location = useLocation();
 
   const getCurrentPage = (): 'home' | 'upload' | 'files' => {
@@ -20,7 +22,7 @@ export const Navbar: React.FC = () => {
   const currentPage = getCurrentPage();
 
   const handleRefresh = () => {
-    window.location.reload();
+    triggerRefresh();
   };
 
   return (
@@ -74,10 +76,14 @@ export const Navbar: React.FC = () => {
           <div className="flex items-center space-x-2">
             <button
               onClick={handleRefresh}
-              className="p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+              disabled={isRefreshing}
+              className={cn(
+                'p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors',
+                isRefreshing && 'opacity-50 cursor-not-allowed'
+              )}
               title="刷新"
             >
-              <RefreshCw className="w-5 h-5" />
+              <RefreshCw className={cn('w-5 h-5', isRefreshing && 'animate-spin')} />
             </button>
             <button
               onClick={toggleTheme}

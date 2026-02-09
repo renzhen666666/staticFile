@@ -4,6 +4,7 @@ import { FolderManager } from '../components/FolderManager';
 import { Search } from 'lucide-react';
 import { fileAPI } from '../utils/api';
 import { getFilesInFolder, getFileMapping } from '../utils/helpers';
+import { useRefresh } from '../context/RefreshContext';
 import type { File } from '../types';
 
 export const FilesPage: React.FC = () => {
@@ -11,10 +12,11 @@ export const FilesPage: React.FC = () => {
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
   const [currentFolderId, setCurrentFolderId] = useState<string | null>(null);
+  const { isRefreshing } = useRefresh();
 
   useEffect(() => {
     loadFiles();
-  }, [searchQuery, currentFolderId]);
+  }, [searchQuery, currentFolderId, isRefreshing]);
 
   const loadFiles = async () => {
     setLoading(true);
