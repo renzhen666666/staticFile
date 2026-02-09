@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { FileIcon, Download, Copy, Trash2, Lock, Calendar, Share2, Eye } from 'lucide-react';
+import { FileIcon, Copy, Trash2, Lock, Calendar, Share2, Eye } from 'lucide-react';
 import type { File } from '../types';
 import { formatFileSize, formatDate, isExpired, copyToClipboard, getFileIcon, isPreviewable } from '../utils/helpers';
 import { fileAPI, shareAPI } from '../utils/api';
@@ -10,7 +10,7 @@ interface FileListProps {
   onRefresh: () => void;
 }
 
-export const FileList: React.FC<FileListProps> = ({ files, onDelete, onRefresh }) => {
+export const FileList: React.FC<FileListProps> = ({ files, onDelete }) => {
   const [showQRCode, setShowQRCode] = useState<number | null>(null);
   const [qrCodeData, setQrCodeData] = useState<{ qrCode: string; downloadUrl: string } | null>(null);
 

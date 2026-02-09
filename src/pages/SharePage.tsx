@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Lock, Download, Eye } from 'lucide-react';
 import { shareAPI } from '../utils/api';
 import { formatFileSize, formatDate, isExpired, getFileIcon, isPreviewable } from '../utils/helpers';

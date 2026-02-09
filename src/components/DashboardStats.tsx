@@ -1,5 +1,5 @@
 import React from 'react';
-import { FileIcon, Download, HardDrive, TrendingUp } from 'lucide-react';
+import { FileIcon, HardDrive, TrendingUp } from 'lucide-react';
 import { formatFileSize } from '../utils/helpers';
 import type { FileStats } from '../types';
 

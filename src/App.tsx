@@ -1,7 +1,6 @@
 import React from 'react'
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom'
-import { AuthProvider, useAuth } from './context/AuthContext'
-import { ThemeProvider } from './context/ThemeContext'
+import { BrowserRouter, Routes, Route, Navigate, useParams } from 'react-router-dom'
+import { useAuth } from './context/AuthContext'
 import { LoginPage } from './pages/LoginPage'
 import { HomePage } from './pages/HomePage'
 import { UploadPage } from './pages/UploadPage'
@@ -38,7 +37,7 @@ const App: React.FC = () => {
     <BrowserRouter>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
-        <Route path="/share/:shortLink" element={<SharePage />} />
+        <Route path="/share/:shortLink" element={<SharePageWrapper />} />
         <Route
           path="/"
           element={
@@ -72,6 +71,11 @@ const App: React.FC = () => {
       </Routes>
     </BrowserRouter>
   )
+}
+
+const SharePageWrapper: React.FC = () => {
+  const { shortLink } = useParams<{ shortLink: string }>()
+  return shortLink ? <SharePage shortLink={shortLink} /> : null
 }
 
 export default App
