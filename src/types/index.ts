@@ -17,6 +17,14 @@ export interface File {
   downloadCount: number;
   expiresAt: string | null;
   createdAt: string;
+  displayName?: string;
+  folderId?: string;
+}
+
+export interface Folder {
+  id: string;
+  name: string;
+  createdAt: string;
 }
 
 export interface FileStats {

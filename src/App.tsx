@@ -15,7 +15,6 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 }
 
 const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [currentPage, setCurrentPage] = React.useState<'home' | 'upload' | 'files'>('home')
   const { isAuthenticated } = useAuth()
 
   if (!isAuthenticated) {
@@ -24,7 +23,7 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   return (
     <>
-      <Navbar currentPage={currentPage} onPageChange={setCurrentPage} />
+      <Navbar />
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         {children}
       </main>
@@ -34,7 +33,10 @@ const AppLayout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
 const App: React.FC = () => {
   return (
-    <BrowserRouter>
+    <BrowserRouter future={{
+      v7_startTransition: true,
+      v7_relativeSplatPath: true
+    }}>
       <Routes>
         <Route path="/login" element={<LoginPage />} />
         <Route path="/share/:shortLink" element={<SharePageWrapper />} />

@@ -1,23 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { FileList } from '../components/FileList';
+import { FolderManager } from '../components/FolderManager';
 import { Search } from 'lucide-react';
 import { fileAPI } from '../utils/api';
+import { getFilesInFolder, getFileMapping } from '../utils/helpers';
 import type { File } from '../types';
 
 export const FilesPage: React.FC = () => {
   const [files, setFiles] = useState<File[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchQuery, setSearchQuery] = useState('');
+  const [currentFolderId, setCurrentFolderId] = useState<string | null>(null);
 
   useEffect(() => {
     loadFiles();
-  }, [searchQuery]);
+  }, [searchQuery, currentFolderId]);
 
   const loadFiles = async () => {
     setLoading(true);
     try {
       const response = await fileAPI.getFiles(searchQuery || undefined);
-      setFiles(response.data);
+      const allFiles = response.data.map(file => {
+        const mapping = getFileMapping(file.id);
+        return {
+          ...file,
+          displayName: mapping?.displayName,
+          folderId: mapping?.folderId
+        };
+      });
+      
+      if (currentFolderId) {
+        setFiles(getFilesInFolder(currentFolderId, allFiles));
+      } else {
+        setFiles(allFiles);
+      }
     } catch (error) {
       console.error('Failed to load files:', error);
     } finally {
@@ -29,11 +45,23 @@ export const FilesPage: React.FC = () => {
     setFiles(files.filter((file) => file.id !== id));
   };
 
+  const handleFolderChange = () => {
+    loadFiles();
+  };
+
   return (
     <div className="space-y-6">
+      <FolderManager 
+        currentFolderId={currentFolderId}
+        onFolderSelect={setCurrentFolderId}
+        onFolderChange={handleFolderChange}
+      />
+
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-md p-6">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <h2 className="text-xl font-bold text-gray-900 dark:text-white">我的文件</h2>
+          <h2 className="text-xl font-bold text-gray-900 dark:text-white">
+            {currentFolderId ? '文件夹中的文件' : '我的文件'}
+          </h2>
           <div className="relative">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
             <input

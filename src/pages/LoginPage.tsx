@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { User, Mail, Lock, Upload } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { authAPI } from '../utils/api';
 import { useAuth } from '../context/AuthContext';
 
@@ -11,6 +12,7 @@ export const LoginPage: React.FC = () => {
   const [isRegister, setIsRegister] = useState(false);
   const [username, setUsername] = useState('');
   const { login } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -25,7 +27,11 @@ export const LoginPage: React.FC = () => {
         const response = await authAPI.login(email, password);
         login(response.data.token, { id: response.data.userId, username: response.data.username || '', email });
       }
+      navigate('/');
     } catch (error: any) {
+      console.error('Login/Register error:', error);
+      console.error('Error response:', error.response);
+      console.error('Error data:', error.response?.data);
       setError(error.response?.data?.error || '操作失败，请重试');
     } finally {
       setLoading(false);

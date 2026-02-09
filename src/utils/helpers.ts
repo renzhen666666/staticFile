@@ -49,3 +49,62 @@ export function isPreviewable(mimeType: string): boolean {
          mimeType.startsWith('audio/') ||
          mimeType === 'application/pdf';
 }
+
+export function getFolders(): any[] {
+  const folders = localStorage.getItem('folders');
+  return folders ? JSON.parse(folders) : [];
+}
+
+export function saveFolder(folder: any): void {
+  const folders = getFolders();
+  folders.push(folder);
+  localStorage.setItem('folders', JSON.stringify(folders));
+}
+
+export function deleteFolder(folderId: string): void {
+  const folders = getFolders().filter(f => f.id !== folderId);
+  localStorage.setItem('folders', JSON.stringify(folders));
+  
+  const fileMappings = getFileMappings();
+  const newMappings = fileMappings.filter(m => m.folderId !== folderId);
+  localStorage.setItem('fileMappings', JSON.stringify(newMappings));
+}
+
+export function updateFolderName(folderId: string, newName: string): void {
+  const folders = getFolders().map(f => 
+    f.id === folderId ? { ...f, name: newName } : f
+  );
+  localStorage.setItem('folders', JSON.stringify(folders));
+}
+
+export function getFileMappings(): any[] {
+  const mappings = localStorage.getItem('fileMappings');
+  return mappings ? JSON.parse(mappings) : [];
+}
+
+export function saveFileMapping(fileId: number, data: { displayName?: string; folderId?: string }): void {
+  const mappings = getFileMappings();
+  const existingIndex = mappings.findIndex(m => m.fileId === fileId);
+  
+  if (existingIndex >= 0) {
+    mappings[existingIndex] = { ...mappings[existingIndex], ...data };
+  } else {
+    mappings.push({ fileId, ...data });
+  }
+  
+  localStorage.setItem('fileMappings', JSON.stringify(mappings));
+}
+
+export function removeFileMapping(fileId: number): void {
+  const mappings = getFileMappings().filter(m => m.fileId !== fileId);
+  localStorage.setItem('fileMappings', JSON.stringify(mappings));
+}
+
+export function getFileMapping(fileId: number): any {
+  const mappings = getFileMappings();
+  return mappings.find(m => m.fileId === fileId);
+}
+
+export function getFilesInFolder(folderId: string, files: any[]): any[] {
+  return files.filter(f => getFileMapping(f.id)?.folderId === folderId);
+}

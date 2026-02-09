@@ -64,7 +64,7 @@ export const shareAPI = {
     api.get<ShareFile>(`/share/${shortLink}`, { params: { password } }),
   
   downloadFile: (shortLink: string, password?: string) => {
-    const url = `${API_BASE_URL}/share/download/${shortLink}${password ? `?password=${password}` : ''}`;
+    const url = `${API_BASE_URL.replace('/api', '')}/download/${shortLink}${password ? `?password=${password}` : ''}`;
     window.open(url, '_blank');
   },
   

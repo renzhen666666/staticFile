@@ -1,17 +1,23 @@
 import React from 'react';
 import { Home, Upload, FolderOpen, Moon, Sun, LogOut, User } from 'lucide-react';
+import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
 import { cn } from '../utils/helpers';
 
-interface NavbarProps {
-  currentPage: 'home' | 'upload' | 'files';
-  onPageChange: (page: 'home' | 'upload' | 'files') => void;
-}
-
-export const Navbar: React.FC<NavbarProps> = ({ currentPage, onPageChange }) => {
+export const Navbar: React.FC = () => {
   const { user, logout } = useAuth();
   const { theme, toggleTheme } = useTheme();
+  const location = useLocation();
+
+  const getCurrentPage = (): 'home' | 'upload' | 'files' => {
+    const path = location.pathname
+    if (path === '/upload') return 'upload'
+    if (path === '/files') return 'files'
+    return 'home'
+  }
+
+  const currentPage = getCurrentPage();
 
   return (
     <nav className="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-50">
@@ -23,8 +29,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, onPageChange }) => 
           </div>
 
           <div className="hidden md:flex items-center space-x-1">
-            <button
-              onClick={() => onPageChange('home')}
+            <Link
+              to="/"
               className={cn(
                 'flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors',
                 currentPage === 'home'
@@ -34,9 +40,9 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, onPageChange }) => 
             >
               <Home className="w-4 h-4" />
               <span>首页</span>
-            </button>
-            <button
-              onClick={() => onPageChange('upload')}
+            </Link>
+            <Link
+              to="/upload"
               className={cn(
                 'flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors',
                 currentPage === 'upload'
@@ -46,9 +52,9 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, onPageChange }) => 
             >
               <Upload className="w-4 h-4" />
               <span>上传</span>
-            </button>
-            <button
-              onClick={() => onPageChange('files')}
+            </Link>
+            <Link
+              to="/files"
               className={cn(
                 'flex items-center space-x-2 px-3 py-2 rounded-lg transition-colors',
                 currentPage === 'files'
@@ -58,7 +64,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, onPageChange }) => 
             >
               <FolderOpen className="w-4 h-4" />
               <span>我的文件</span>
-            </button>
+            </Link>
           </div>
 
           <div className="flex items-center space-x-2">
@@ -86,8 +92,8 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, onPageChange }) => 
         </div>
 
         <div className="md:hidden flex justify-around py-2 border-t border-gray-200 dark:border-gray-700">
-          <button
-            onClick={() => onPageChange('home')}
+          <Link
+            to="/"
             className={cn(
               'flex flex-col items-center space-y-1 px-3 py-1 rounded-lg transition-colors',
               currentPage === 'home'
@@ -97,9 +103,9 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, onPageChange }) => 
           >
             <Home className="w-5 h-5" />
             <span className="text-xs">首页</span>
-          </button>
-          <button
-            onClick={() => onPageChange('upload')}
+          </Link>
+          <Link
+            to="/upload"
             className={cn(
               'flex flex-col items-center space-y-1 px-3 py-1 rounded-lg transition-colors',
               currentPage === 'upload'
@@ -109,9 +115,9 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, onPageChange }) => 
           >
             <Upload className="w-5 h-5" />
             <span className="text-xs">上传</span>
-          </button>
-          <button
-            onClick={() => onPageChange('files')}
+          </Link>
+          <Link
+            to="/files"
             className={cn(
               'flex flex-col items-center space-y-1 px-3 py-1 rounded-lg transition-colors',
               currentPage === 'files'
@@ -121,7 +127,7 @@ export const Navbar: React.FC<NavbarProps> = ({ currentPage, onPageChange }) => 
           >
             <FolderOpen className="w-5 h-5" />
             <span className="text-xs">我的文件</span>
-          </button>
+          </Link>
         </div>
       </div>
     </nav>
