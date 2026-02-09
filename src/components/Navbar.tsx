@@ -1,5 +1,5 @@
 import React from 'react';
-import { Home, Upload, FolderOpen, Moon, Sun, LogOut, User } from 'lucide-react';
+import { Home, Upload, FolderOpen, Moon, Sun, LogOut, User, RefreshCw } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useTheme } from '../context/ThemeContext';
@@ -18,6 +18,10 @@ export const Navbar: React.FC = () => {
   }
 
   const currentPage = getCurrentPage();
+
+  const handleRefresh = () => {
+    window.location.reload();
+  };
 
   return (
     <nav className="bg-white dark:bg-gray-800 shadow-md sticky top-0 z-50">
@@ -68,6 +72,13 @@ export const Navbar: React.FC = () => {
           </div>
 
           <div className="flex items-center space-x-2">
+            <button
+              onClick={handleRefresh}
+              className="p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
+              title="刷新"
+            >
+              <RefreshCw className="w-5 h-5" />
+            </button>
             <button
               onClick={toggleTheme}
               className="p-2 text-gray-700 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
