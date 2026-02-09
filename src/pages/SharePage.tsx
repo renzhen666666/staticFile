@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Lock, Download, Eye } from 'lucide-react';
+import { Lock, Download, Eye, X } from 'lucide-react';
 import { shareAPI } from '../utils/api';
 import { formatFileSize, formatDate, isExpired, getFileIcon, isPreviewable } from '../utils/helpers';
 import type { ShareFile } from '../types';
@@ -13,6 +13,7 @@ export const SharePage: React.FC<SharePageProps> = ({ shortLink }) => {
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [previewMode, setPreviewMode] = useState(false);
 
   const loadFile = async () => {
     setLoading(true);
@@ -37,9 +38,12 @@ export const SharePage: React.FC<SharePageProps> = ({ shortLink }) => {
 
   const handlePreview = () => {
     if (file && isPreviewable(file.mimeType)) {
-      const link = `${window.location.origin}/share/${shortLink}`;
-      window.open(link, '_blank');
+      setPreviewMode(true);
     }
+  };
+
+  const handleClosePreview = () => {
+    setPreviewMode(false);
   };
 
   if (loading) {
@@ -85,6 +89,64 @@ export const SharePage: React.FC<SharePageProps> = ({ shortLink }) => {
   }
 
   if (!file) return null;
+
+  if (previewMode && isPreviewable(file.mimeType)) {
+    return (
+      <div className="min-h-screen bg-gray-900 dark:bg-gray-950">
+        <div className="fixed top-4 right-4 z-50">
+          <button
+            onClick={handleClosePreview}
+            className="bg-white dark:bg-gray-800 hover:bg-gray-100 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 p-2 rounded-full shadow-lg transition-colors"
+          >
+            <X className="w-6 h-6" />
+          </button>
+        </div>
+        <div className="flex items-center justify-center h-full p-4">
+          <div className="max-w-5xl w-full">
+            <div className="bg-white dark:bg-gray-800 rounded-lg shadow-2xl overflow-hidden">
+              <div className="bg-gray-100 dark:bg-gray-900 px-4 py-2 flex items-center justify-between">
+                <h2 className="text-lg font-semibold text-gray-900 dark:text-white">{file.originalName}</h2>
+              </div>
+              <div className="relative w-full" style={{ height: 'calc(100vh - 200px)' }}>
+                {file.mimeType.startsWith('image/') && (
+                  <img
+                    src={`${window.location.origin}/download/${shortLink}`}
+                    alt={file.originalName}
+                    className="w-full h-full object-contain"
+                  />
+                )}
+                {file.mimeType.startsWith('video/') && (
+                  <video
+                    src={`${window.location.origin}/download/${shortLink}`}
+                    controls
+                    className="w-full h-full"
+                  >
+                    您的浏览器不支持视频播放
+                  </video>
+                )}
+                {file.mimeType.startsWith('audio/') && (
+                  <audio
+                    src={`${window.location.origin}/download/${shortLink}`}
+                    controls
+                    className="w-full"
+                  >
+                    您的浏览器不支持音频播放
+                  </audio>
+                )}
+                {file.mimeType === 'application/pdf' && (
+                  <iframe
+                    src={`${window.location.origin}/download/${shortLink}`}
+                    className="w-full h-full"
+                    title={file.originalName}
+                  />
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gray-50 dark:bg-gray-900 py-12 px-4">
