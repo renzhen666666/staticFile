@@ -1,7 +1,7 @@
 import axios from 'axios';
 import type { AuthResponse, File, FileStats, UploadResponse, ShareFile, QRCodeResponse } from '../types';
 
-const API_BASE_URL = '/api';
+const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3001/api';
 
 const api = axios.create({
   baseURL: API_BASE_URL,
